@@ -23,7 +23,12 @@ app.post('/', function (req, res) {
         const data = JSON.parse(body)
         const price = data.averages.week
 
-        res.send(`<h1>The price of ${crypto} is ${price} ${fiat}.</h1>`)
+        const currentDate = data.display_timestamp
+
+        res.write(`<p>The current date is ${currentDate}</p>`)
+        res.write(`<h1>The price of ${crypto} is ${price} ${fiat}.</h1>`)
+
+        res.send()
     })
 })
 
