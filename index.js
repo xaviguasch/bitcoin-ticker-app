@@ -13,8 +13,17 @@ app.get('/', function (req, res) {
 })
 
 app.post('/', function (req, res) {
-    request('https://apiv2.bitcoinaverage.com/indices/global/ticker/BTCUSD', function (error, response, body) {
-        console.log(body)
+    const crypto = req.body.crypto
+    const fiat = req.body.fiat
+
+    const baseURL = 'https://apiv2.bitcoinaverage.com/indices/global/ticker'
+    const finalURL = `${baseURL}/${crypto}${fiat}`
+
+    request(`${finalURL}`, function (error, response, body) {
+        const data = JSON.parse(body)
+        const price = data.averages.week
+
+        res.send(`<h1>The price of ${crypto} is ${price} ${fiat}.</h1>`)
     })
 })
 
