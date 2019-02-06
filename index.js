@@ -15,18 +15,26 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
     const crypto = req.body.crypto
     const fiat = req.body.fiat
+    const amount = req.body.amount
 
-    const baseURL = 'https://apiv2.bitcoinaverage.com/indices/global/ticker'
-    const finalURL = `${baseURL}/${crypto}${fiat}`
+    const options = {
+        url: 'https://apiv2.bitcoinaverage.com/convert/global',
+        method: 'GET',
+        qs: {
+            from: crypto,
+            to: fiat,
+            amount: amount
+        }
+    }
 
-    request(`${finalURL}`, function (error, response, body) {
+    request(options, function (error, response, body) {
         const data = JSON.parse(body)
-        const price = data.averages.week
+        const price = data.price
 
-        const currentDate = data.display_timestamp
+        const currentDate = data.time
 
         res.write(`<p>The current date is ${currentDate}</p>`)
-        res.write(`<h1>The price of ${crypto} is ${price} ${fiat}.</h1>`)
+        res.write(`<h1>${amount} ${crypto} is currently worth ${price} ${fiat}.</h1>`)
 
         res.send()
     })
